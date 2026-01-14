@@ -18,7 +18,7 @@
  * LVGL related parameters, can be adjusted by users
  */
 #define LVGL_PORT_TICK_PERIOD_MS                                               \
-  (2) // The period of the LVGL tick task, in milliseconds
+  (2)  // The period of the LVGL tick task, in milliseconds
 
 /**
  *
@@ -40,7 +40,7 @@
  *      - The number of buffers should be 1 or 2.
  */
 #define LVGL_PORT_BUFFER_MALLOC_CAPS                                           \
-  (MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT) // Allocate LVGL buffer in SRAM
+  (MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT)  // Allocate LVGL buffer in SRAM
 // #define LVGL_PORT_BUFFER_MALLOC_CAPS            (MALLOC_CAP_SPIRAM)      //
 // Allocate LVGL buffer in PSRAM
 #define LVGL_PORT_BUFFER_SIZE_HEIGHT (20)
@@ -50,16 +50,16 @@
  * LVGL timer handle task related parameters, can be adjusted by users
  */
 #define LVGL_PORT_TASK_MAX_DELAY_MS                                            \
-  (500) // The maximum delay of the LVGL timer task, in milliseconds
+  (500)  // The maximum delay of the LVGL timer task, in milliseconds
 #define LVGL_PORT_TASK_MIN_DELAY_MS                                            \
-  (2) // The minimum delay of the LVGL timer task, in milliseconds
+  (2)  // The minimum delay of the LVGL timer task, in milliseconds
 #define LVGL_PORT_TASK_STACK_SIZE                                              \
-  (6 * 1024) // The stack size of the LVGL timer task, in bytes
-#define LVGL_PORT_TASK_PRIORITY (2) // The priority of the LVGL timer task
+  (6 * 1024)  // The stack size of the LVGL timer task, in bytes
+#define LVGL_PORT_TASK_PRIORITY (2)  // The priority of the LVGL timer task
 #ifdef ARDUINO_RUNNING_CORE
-#define LVGL_PORT_TASK_CORE (ARDUINO_RUNNING_CORE) // Valid if using Arduino
+#define LVGL_PORT_TASK_CORE (ARDUINO_RUNNING_CORE)  // Valid if using Arduino
 #else
-#define LVGL_PORT_TASK_CORE (0) // Valid if using ESP-IDF
+#define LVGL_PORT_TASK_CORE (0)  // Valid if using ESP-IDF
 #endif
 // The core of the LVGL timer task, `-1` means the don't specify the core
 // Default is the same as the main core
@@ -83,7 +83,7 @@
 #define LVGL_PORT_AVOID_TEARING_MODE (CONFIG_LVGL_PORT_AVOID_TEARING_MODE)
 // Valid if using ESP-IDF
 #else
-#define LVGL_PORT_AVOID_TEARING_MODE (0) // Valid if using Arduino
+#define LVGL_PORT_AVOID_TEARING_MODE (0)  // Valid if using Arduino
 #endif
 
 #if LVGL_PORT_AVOID_TEARING_MODE != 0
@@ -102,7 +102,7 @@
 #define LVGL_PORT_ROTATION_DEGREE (CONFIG_LVGL_PORT_ROTATION_DEGREE)
 // Valid if using ESP-IDF
 #else
-#define LVGL_PORT_ROTATION_DEGREE (0) // Valid if using Arduino
+#define LVGL_PORT_ROTATION_DEGREE (0)  // Valid if using Arduino
 #endif
 
 /**
