@@ -7,6 +7,7 @@ declare global {
     api: {
       getRoutes: () => Promise<Route[]>;
       addRoute: (route: Route) => Promise<void>;
+      updateRoute: (route: Route) => Promise<void>;
       deleteRoute: (id: string) => Promise<void>;
       exportData: () => Promise<{
         success: boolean;

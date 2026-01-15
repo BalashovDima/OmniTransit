@@ -1,17 +1,19 @@
 import { useState } from 'react';
 import { Route } from '../types';
-import { Trash2, Search, Hexagon } from 'lucide-react';
+import { Trash2, Search, Hexagon, Pencil } from 'lucide-react';
 
 interface RouteTableProps {
   routes: Route[];
   type: 'bus' | 'tram';
   onDelete: (id: string) => void;
+  onEdit: (route: Route) => void;
 }
 
 export default function RouteTable({
   routes,
   type,
   onDelete,
+  onEdit,
 }: RouteTableProps) {
   const [search, setSearch] = useState('');
 
@@ -92,13 +94,22 @@ export default function RouteTable({
                       })()}
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <button
-                        onClick={() => onDelete(route.id)}
-                        className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all opacity-0 group-hover:opacity-100 focus:opacity-100"
-                        title="Delete Route"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                      <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={() => onEdit(route)}
+                          className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-all"
+                          title="Edit Route"
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => onDelete(route.id)}
+                          className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                          title="Delete Route"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))

@@ -9,6 +9,7 @@ function App() {
   const [view, setView] = useState<'bus' | 'tram'>('bus');
   const [routes, setRoutes] = useState<Route[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingRoute, setEditingRoute] = useState<Route | null>(null);
 
   const loadRoutes = async () => {
     try {
@@ -20,19 +21,19 @@ function App() {
   };
 
   useEffect(() => {
-    const loadData = async () => {
-      const data = await window.api.getRoutes();
-      setRoutes(data); // This is safe because it happens after an await
-    };
-    loadData();
+    loadRoutes();
   }, []);
 
   const handleAddRoute = async (route: Route) => {
     try {
-      await window.api.addRoute(route);
+      if (route.id && routes.find((r) => r.id === route.id)) {
+        await window.api.updateRoute(route);
+      } else {
+        await window.api.addRoute(route);
+      }
       await loadRoutes();
     } catch (err) {
-      console.error('Failed to add route:', err);
+      console.error('Failed to save route:', err);
     }
   };
 
@@ -45,6 +46,11 @@ function App() {
         console.error('Failed to delete route:', err);
       }
     }
+  };
+
+  const handleEditRoute = (route: Route) => {
+    setEditingRoute(route);
+    setIsModalOpen(true);
   };
 
   const handleExport = async () => {
@@ -75,7 +81,10 @@ function App() {
             {view === 'bus' ? 'Bus Routes' : 'Tram Routes'}
           </h2>
           <button
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => {
+              setEditingRoute(null);
+              setIsModalOpen(true);
+            }}
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium shadow-sm transition-colors"
           >
             <Plus className="w-4 h-4" />
@@ -83,14 +92,23 @@ function App() {
           </button>
         </div>
 
-        <RouteTable routes={routes} type={view} onDelete={handleDeleteRoute} />
+        <RouteTable
+          routes={routes}
+          type={view}
+          onDelete={handleDeleteRoute}
+          onEdit={handleEditRoute}
+        />
       </main>
 
       <NewRouteModal
         isOpen={isModalOpen}
         currentType={view}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingRoute(null);
+        }}
         onSave={handleAddRoute}
+        routeToEdit={editingRoute}
       />
     </div>
   );

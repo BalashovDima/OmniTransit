@@ -6,6 +6,8 @@ const api = {
   getRoutes: (): Promise<Route[]> => ipcRenderer.invoke('get-routes'),
   addRoute: (route: Route): Promise<void> =>
     ipcRenderer.invoke('add-route', route),
+  updateRoute: (route: Route): Promise<void> =>
+    ipcRenderer.invoke('update-route', route),
   deleteRoute: (id: string): Promise<void> =>
     ipcRenderer.invoke('delete-route', id),
   exportData: (): Promise<{

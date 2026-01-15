@@ -7,6 +7,7 @@ interface NewRouteModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (route: Route) => void;
+  routeToEdit?: Route | null;
 }
 
 export default function NewRouteModal({
@@ -14,18 +15,46 @@ export default function NewRouteModal({
   isOpen,
   onClose,
   onSave,
+  routeToEdit,
 }: NewRouteModalProps) {
   const [name, setName] = useState('');
   const [cmd1, setCmd1] = useState('');
   const [cmd2, setCmd2] = useState('');
   const [text, setText] = useState('');
 
+  // Populate state when modal opens or routeToEdit changes
+  React.useEffect(() => {
+    if (isOpen) {
+      if (routeToEdit) {
+        setName(routeToEdit.name);
+        setCmd1(routeToEdit.ibisLineCmd.toString());
+        setCmd2(routeToEdit.ibisDestinationCmd.toString());
+        try {
+          const bytes = (routeToEdit.alfaSignBytes as any).data
+            ? new Uint8Array((routeToEdit.alfaSignBytes as any).data)
+            : routeToEdit.alfaSignBytes instanceof Uint8Array
+              ? routeToEdit.alfaSignBytes
+              : new Uint8Array(routeToEdit.alfaSignBytes as any);
+          setText(new TextDecoder().decode(bytes));
+        } catch {
+          setText('');
+        }
+      } else {
+        // Reset for new route
+        setName('');
+        setCmd1('');
+        setCmd2('');
+        setText('');
+      }
+    }
+  }, [isOpen, routeToEdit]);
+
   if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simple ID generation, better usage would be UUID
-    const id = Date.now().toString();
+    // Use existing ID if editing, else generate new
+    const id = routeToEdit?.id || Date.now().toString();
 
     // Parse int (decimal)
     const parseCmd = (val: string) => parseInt(val, 10);
@@ -40,11 +69,6 @@ export default function NewRouteModal({
     };
 
     onSave(newRoute);
-    // Reset
-    setName('');
-    setCmd1('');
-    setCmd2('');
-    setText('');
     onClose();
   };
 
@@ -53,7 +77,9 @@ export default function NewRouteModal({
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
         <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
           <h2 className="text-lg font-semibold text-gray-800">
-            Add New {currentType === 'bus' ? 'Bus' : 'Tram'} Route
+            {routeToEdit
+              ? 'Edit Route'
+              : `Add New ${currentType === 'bus' ? 'Bus' : 'Tram'} Route`}
           </h2>
           <button
             onClick={onClose}
@@ -127,7 +153,7 @@ export default function NewRouteModal({
               className="w-full flex items-center justify-center gap-2 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium shadow-lg shadow-blue-900/20 transition-all active:scale-[0.98]"
             >
               <Save className="w-4 h-4" />
-              Save Route
+              {routeToEdit ? 'Update Route' : 'Save Route'}
             </button>
           </div>
         </form>

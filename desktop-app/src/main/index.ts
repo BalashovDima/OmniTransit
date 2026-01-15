@@ -1,7 +1,14 @@
 import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron';
 import { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
-import { initDB, getAllRoutes, addRoute, deleteRoute, Route } from './database';
+import {
+  initDB,
+  getAllRoutes,
+  addRoute,
+  updateRoute,
+  deleteRoute,
+  Route,
+} from './database';
 import { generateEsp32Files } from './exporter';
 
 import windowStateKeeper from 'electron-window-state';
@@ -61,6 +68,10 @@ function setupIpc(): void {
 
   ipcMain.handle('add-route', (_, route: Route) => {
     addRoute(route);
+  });
+
+  ipcMain.handle('update-route', (_, route: Route) => {
+    updateRoute(route);
   });
 
   ipcMain.handle('delete-route', (_, id: string) => {

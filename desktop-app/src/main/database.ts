@@ -98,6 +98,16 @@ export function getAllRoutes(): Route[] {
   return stmt.all() as Route[];
 }
 
+export function updateRoute(route: Route): void {
+  const stmt = db.prepare(`
+    UPDATE routes 
+    SET type = @type, name = @name, ibisLineCmd = @ibisLineCmd, 
+        ibisDestinationCmd = @ibisDestinationCmd, alfaSignBytes = @alfaSignBytes
+    WHERE id = @id
+  `);
+  stmt.run(route);
+}
+
 export function addRoute(route: Route): void {
   const stmt = db.prepare(`
     INSERT INTO routes (id, type, name, ibisLineCmd, ibisDestinationCmd, alfaSignBytes)
