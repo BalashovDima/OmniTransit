@@ -4,11 +4,21 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import { initDB, getAllRoutes, addRoute, deleteRoute, Route } from './database';
 import { generateEsp32Files } from './exporter';
 
+import windowStateKeeper from 'electron-window-state';
+
 function createWindow(): void {
+  // Load the previous state with fallback to defaults
+  const mainWindowState = windowStateKeeper({
+    defaultWidth: 900,
+    defaultHeight: 670,
+  });
+
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    x: mainWindowState.x,
+    y: mainWindowState.y,
+    width: mainWindowState.width,
+    height: mainWindowState.height,
     show: false,
     autoHideMenuBar: false,
     ...(process.platform === 'linux'
@@ -19,6 +29,11 @@ function createWindow(): void {
       sandbox: false,
     },
   });
+
+  // Let us register listeners on the window, so we can update the state
+  // automatically (the listeners will be removed when the window is closed)
+  // and restore the maximized or full screen state
+  mainWindowState.manage(mainWindow);
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show();
