@@ -11,9 +11,9 @@ export interface Route {
   id: string;
   type: 'bus' | 'tram';
   name: string;
-  command1: number;
-  command2: number;
-  text: string;
+  ibisLineCmd: number;
+  ibisDestinationCmd: number;
+  alfaSignBytes: Buffer | Uint8Array;
 }
 
 const START_VERSION = 1;
@@ -34,10 +34,32 @@ const migrations: Record<number, () => void> = {
     `,
     ).run();
   },
-  // 2: () => {
-  // Your first actual change after the baseline
-  // db.prepare(`ALTER TABLE routes ADD COLUMN ...`).run()
-  // }
+  2: () => {
+    db.prepare(
+      `
+        CREATE TABLE routes_new (
+          id TEXT PRIMARY KEY,
+          type TEXT NOT NULL CHECK(type IN ('bus', 'tram')),
+          name TEXT NOT NULL,
+          ibisLineCmd INTEGER NOT NULL,
+          ibisDestinationCmd INTEGER NOT NULL,
+          alfaSignBytes BLOB NOT NULL
+        )
+      `,
+    ).run();
+
+    db.prepare(
+      `
+        INSERT INTO routes_new (id, type, name, ibisLineCmd, ibisDestinationCmd, alfaSignBytes)
+        SELECT id, type, name, command1, command2, CAST(text AS BLOB)
+        FROM routes
+      `,
+    ).run();
+
+    db.prepare('DROP TABLE routes').run();
+
+    db.prepare('ALTER TABLE routes_new RENAME TO routes').run();
+  },
 };
 
 export function initDB(): void {
@@ -78,8 +100,8 @@ export function getAllRoutes(): Route[] {
 
 export function addRoute(route: Route): void {
   const stmt = db.prepare(`
-    INSERT INTO routes (id, type, name, command1, command2, text)
-    VALUES (@id, @type, @name, @command1, @command2, @text)
+    INSERT INTO routes (id, type, name, ibisLineCmd, ibisDestinationCmd, alfaSignBytes)
+    VALUES (@id, @type, @name, @ibisLineCmd, @ibisDestinationCmd, @alfaSignBytes)
   `);
   stmt.run(route);
 }

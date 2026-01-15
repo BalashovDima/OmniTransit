@@ -2,7 +2,8 @@ export interface Route {
   id: string;
   type: 'bus' | 'tram';
   name: string;
-  command1: number;
-  command2: number;
-  text: string;
+  ibisLineCmd: number;
+  ibisDestinationCmd: number;
+  // Uint8Array is compatible with Buffer/BLOB in IPC and SQLite
+  alfaSignBytes: Uint8Array;
 }

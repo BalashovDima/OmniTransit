@@ -17,9 +17,7 @@ export default function RouteTable({
 
   const filteredRoutes = routes.filter(
     (r) =>
-      r.type === type &&
-      (r.name.toLowerCase().includes(search.toLowerCase()) ||
-        r.text.toLowerCase().includes(search.toLowerCase())),
+      r.type === type && r.name.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
@@ -48,9 +46,9 @@ export default function RouteTable({
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200 text-xs uppercase text-gray-500 font-semibold tracking-wider">
                 <th className="px-6 py-4">Name</th>
-                <th className="px-6 py-4">Command 1</th>
-                <th className="px-6 py-4">Command 2</th>
-                <th className="px-6 py-4">Text</th>
+                <th className="px-6 py-4">Line Cmd</th>
+                <th className="px-6 py-4">Dest Cmd</th>
+                <th className="px-6 py-4">Sign Text</th>
                 <th className="px-6 py-4 text-right">Actions</th>
               </tr>
             </thead>
@@ -68,7 +66,7 @@ export default function RouteTable({
                       <div className="flex items-center gap-2">
                         <Hexagon className="w-3 h-3 text-purple-400" />
                         0x
-                        {route.command1
+                        {route.ibisLineCmd
                           .toString(16)
                           .toUpperCase()
                           .padStart(2, '0')}
@@ -78,7 +76,7 @@ export default function RouteTable({
                       <div className="flex items-center gap-2">
                         <Hexagon className="w-3 h-3 text-blue-400" />
                         0x
-                        {route.command2
+                        {route.ibisDestinationCmd
                           .toString(16)
                           .toUpperCase()
                           .padStart(2, '0')}
@@ -86,9 +84,20 @@ export default function RouteTable({
                     </td>
                     <td
                       className="px-6 py-4 text-gray-700 max-w-xs truncate"
-                      title={route.text}
+                      title="Sign Text"
                     >
-                      {route.text}
+                      {(() => {
+                        try {
+                          const bytes = (route.alfaSignBytes as any).data
+                            ? new Uint8Array((route.alfaSignBytes as any).data)
+                            : route.alfaSignBytes instanceof Uint8Array
+                              ? route.alfaSignBytes
+                              : new Uint8Array(route.alfaSignBytes as any);
+                          return new TextDecoder().decode(bytes);
+                        } catch (e) {
+                          return '[Binary Data]';
+                        }
+                      })()}
                     </td>
                     <td className="px-6 py-4 text-right">
                       <button

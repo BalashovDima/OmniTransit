@@ -37,9 +37,9 @@ export default function NewRouteModal({
       id,
       type: currentType,
       name,
-      command1: parseCmd(cmd1) || 0,
-      command2: parseCmd(cmd2) || 0,
-      text,
+      ibisLineCmd: parseCmd(cmd1) || 0,
+      ibisDestinationCmd: parseCmd(cmd2) || 0,
+      alfaSignBytes: new TextEncoder().encode(text),
     };
 
     onSave(newRoute);
@@ -84,7 +84,7 @@ export default function NewRouteModal({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Command 1
+                Line Cmd
               </label>
               <input
                 required
@@ -97,7 +97,7 @@ export default function NewRouteModal({
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Command 2
+                Dest Cmd
               </label>
               <input
                 required
@@ -112,7 +112,7 @@ export default function NewRouteModal({
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Display Text
+              Sign Text
             </label>
             <textarea
               required

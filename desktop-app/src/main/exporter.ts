@@ -22,9 +22,9 @@ export function generateEsp32Files(routes: Route[], outputDir: string): void {
     const data = {
       id: route.id,
       name: route.name,
-      cmd1: route.command1, // Shortened or hex? User asked for command1/2. Keeping as number (int)
-      cmd2: route.command2,
-      text: route.text,
+      ibisLineCmd: route.ibisLineCmd,
+      ibisDestinationCmd: route.ibisDestinationCmd,
+      alfaSignBytes: Array.from(route.alfaSignBytes),
     };
 
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
