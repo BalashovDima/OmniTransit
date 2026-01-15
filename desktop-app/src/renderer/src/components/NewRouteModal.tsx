@@ -27,11 +27,8 @@ export default function NewRouteModal({
     // Simple ID generation, better usage would be UUID
     const id = Date.now().toString();
 
-    // Parse hex or int
-    const parseCmd = (val: string) => {
-      if (val.startsWith('0x')) return parseInt(val, 16);
-      return parseInt(val);
-    };
+    // Parse int (decimal)
+    const parseCmd = (val: string) => parseInt(val, 10);
 
     const newRoute: Route = {
       id,
@@ -92,7 +89,7 @@ export default function NewRouteModal({
                 value={cmd1}
                 onChange={(e) => setCmd1(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all font-mono"
-                placeholder="0x01"
+                placeholder="123"
               />
             </div>
             <div>
@@ -105,7 +102,7 @@ export default function NewRouteModal({
                 value={cmd2}
                 onChange={(e) => setCmd2(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all font-mono"
-                placeholder="0x02"
+                placeholder="123"
               />
             </div>
           </div>

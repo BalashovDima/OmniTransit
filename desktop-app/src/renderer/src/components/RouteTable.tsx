@@ -63,23 +63,15 @@ export default function RouteTable({
                       {route.name}
                     </td>
                     <td className="px-6 py-4 font-mono text-xs text-gray-600">
-                      <div className="flex items-center gap-2">
-                        <Hexagon className="w-3 h-3 text-purple-400" />
-                        0x
-                        {route.ibisLineCmd
-                          .toString(16)
-                          .toUpperCase()
-                          .padStart(2, '0')}
+                      <div className="flex items-center">
+                        <span className="text-purple-600 font-bold">l</span>
+                        {route.ibisLineCmd.toString().padStart(3, '0')}
                       </div>
                     </td>
                     <td className="px-6 py-4 font-mono text-xs text-gray-600">
-                      <div className="flex items-center gap-2">
-                        <Hexagon className="w-3 h-3 text-blue-400" />
-                        0x
-                        {route.ibisDestinationCmd
-                          .toString(16)
-                          .toUpperCase()
-                          .padStart(2, '0')}
+                      <div className="flex items-center">
+                        <span className="text-blue-600 font-bold">z</span>
+                        {route.ibisDestinationCmd.toString().padStart(3, '0')}
                       </div>
                     </td>
                     <td
