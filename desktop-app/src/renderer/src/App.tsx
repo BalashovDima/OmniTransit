@@ -1,23 +1,23 @@
-import { useEffect, useState } from 'react'
-import Sidebar from './components/Sidebar'
-import RouteTable from './components/RouteTable'
-import NewRouteModal from './components/NewRouteModal'
-import { Route } from './types'
-import { Plus } from 'lucide-react'
+import { useEffect, useState } from 'react';
+import Sidebar from './components/Sidebar';
+import RouteTable from './components/RouteTable';
+import NewRouteModal from './components/NewRouteModal';
+import { Route } from './types';
+import { Plus } from 'lucide-react';
 
 function App() {
-  const [view, setView] = useState<'bus' | 'tram'>('bus')
-  const [routes, setRoutes] = useState<Route[]>([])
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [view, setView] = useState<'bus' | 'tram'>('bus');
+  const [routes, setRoutes] = useState<Route[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const loadRoutes = async () => {
     try {
-      const data = await window.api.getRoutes()
-      setRoutes(data)
+      const data = await window.api.getRoutes();
+      setRoutes(data);
     } catch (err) {
-      console.error('Failed to load routes:', err)
+      console.error('Failed to load routes:', err);
     }
-  }
+  };
 
   useEffect(() => {
     const loadData = async () => {
@@ -29,40 +29,44 @@ function App() {
 
   const handleAddRoute = async (route: Route) => {
     try {
-      await window.api.addRoute(route)
-      await loadRoutes()
+      await window.api.addRoute(route);
+      await loadRoutes();
     } catch (err) {
-      console.error('Failed to add route:', err)
+      console.error('Failed to add route:', err);
     }
-  }
+  };
 
   const handleDeleteRoute = async (id: string) => {
     if (confirm('Are you sure you want to delete this route?')) {
       try {
-        await window.api.deleteRoute(id)
-        await loadRoutes()
+        await window.api.deleteRoute(id);
+        await loadRoutes();
       } catch (err) {
-        console.error('Failed to delete route:', err)
+        console.error('Failed to delete route:', err);
       }
     }
-  }
+  };
 
   const handleExport = async () => {
     try {
-      const result = await window.api.exportData()
+      const result = await window.api.exportData();
       if (result.success) {
-        alert(`Export successful to: ${result.path}`)
+        alert(`Export successful to: ${result.path}`);
       } else if (result.message !== 'Cancelled') {
-        alert(`Export failed: ${result.message}`)
+        alert(`Export failed: ${result.message}`);
       }
     } catch (err) {
-      console.error('Export error:', err)
+      console.error('Export error:', err);
     }
-  }
+  };
 
   return (
     <div className="flex h-screen bg-gray-50 font-sans text-gray-900">
-      <Sidebar currentView={view} onChangeView={setView} onExport={handleExport} />
+      <Sidebar
+        currentView={view}
+        onChangeView={setView}
+        onExport={handleExport}
+      />
 
       <main className="flex-1 flex flex-col min-w-0">
         {/* Top Bar for Content Area */}
@@ -89,7 +93,7 @@ function App() {
         onSave={handleAddRoute}
       />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

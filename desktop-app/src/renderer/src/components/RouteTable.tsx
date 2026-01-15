@@ -1,22 +1,26 @@
-import { useState } from 'react'
-import { Route } from '../types'
-import { Trash2, Search, Hexagon } from 'lucide-react'
+import { useState } from 'react';
+import { Route } from '../types';
+import { Trash2, Search, Hexagon } from 'lucide-react';
 
 interface RouteTableProps {
-  routes: Route[]
-  type: 'bus' | 'tram'
-  onDelete: (id: string) => void
+  routes: Route[];
+  type: 'bus' | 'tram';
+  onDelete: (id: string) => void;
 }
 
-export default function RouteTable({ routes, type, onDelete }: RouteTableProps) {
-  const [search, setSearch] = useState('')
+export default function RouteTable({
+  routes,
+  type,
+  onDelete,
+}: RouteTableProps) {
+  const [search, setSearch] = useState('');
 
   const filteredRoutes = routes.filter(
     (r) =>
       r.type === type &&
       (r.name.toLowerCase().includes(search.toLowerCase()) ||
-        r.text.toLowerCase().includes(search.toLowerCase()))
-  )
+        r.text.toLowerCase().includes(search.toLowerCase())),
+  );
 
   return (
     <div className="flex-1 flex flex-col h-full bg-gray-50 overflow-hidden">
@@ -53,21 +57,37 @@ export default function RouteTable({ routes, type, onDelete }: RouteTableProps) 
             <tbody className="divide-y divide-gray-100">
               {filteredRoutes.length > 0 ? (
                 filteredRoutes.map((route) => (
-                  <tr key={route.id} className="hover:bg-gray-50 transition-colors group">
-                    <td className="px-6 py-4 font-medium text-gray-900">{route.name}</td>
+                  <tr
+                    key={route.id}
+                    className="hover:bg-gray-50 transition-colors group"
+                  >
+                    <td className="px-6 py-4 font-medium text-gray-900">
+                      {route.name}
+                    </td>
                     <td className="px-6 py-4 font-mono text-xs text-gray-600">
                       <div className="flex items-center gap-2">
                         <Hexagon className="w-3 h-3 text-purple-400" />
-                        0x{route.command1.toString(16).toUpperCase().padStart(2, '0')}
+                        0x
+                        {route.command1
+                          .toString(16)
+                          .toUpperCase()
+                          .padStart(2, '0')}
                       </div>
                     </td>
                     <td className="px-6 py-4 font-mono text-xs text-gray-600">
                       <div className="flex items-center gap-2">
                         <Hexagon className="w-3 h-3 text-blue-400" />
-                        0x{route.command2.toString(16).toUpperCase().padStart(2, '0')}
+                        0x
+                        {route.command2
+                          .toString(16)
+                          .toUpperCase()
+                          .padStart(2, '0')}
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-gray-700 max-w-xs truncate" title={route.text}>
+                    <td
+                      className="px-6 py-4 text-gray-700 max-w-xs truncate"
+                      title={route.text}
+                    >
                       {route.text}
                     </td>
                     <td className="px-6 py-4 text-right">
@@ -83,7 +103,10 @@ export default function RouteTable({ routes, type, onDelete }: RouteTableProps) 
                 ))
               ) : (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
+                  <td
+                    colSpan={5}
+                    className="px-6 py-12 text-center text-gray-500"
+                  >
                     No routes found.
                   </td>
                 </tr>
@@ -93,5 +116,5 @@ export default function RouteTable({ routes, type, onDelete }: RouteTableProps) 
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -4,6 +4,7 @@ import tseslint from 'typescript-eslint'
 import reactPlugin from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
+import eslintConfigPrettier from 'eslint-config-prettier';
 
 export default tseslint.config(
   {
@@ -35,6 +36,7 @@ export default tseslint.config(
     rules: {
       ...reactHooks.configs.recommended.rules,
       'indent': ['error', 2],
+      '@typescript-eslint/semi': ['error', 'always'],
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true }
@@ -46,5 +48,7 @@ export default tseslint.config(
         version: 'detect'
       }
     }
-  }
+  },
+  // MUST BE LAST: This disables all rules that conflict with Prettier
+  eslintConfigPrettier
 )

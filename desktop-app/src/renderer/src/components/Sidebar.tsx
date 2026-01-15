@@ -1,13 +1,17 @@
-import { Bus, TramFront, FileUp } from 'lucide-react'
-import clsx from 'clsx'
+import { Bus, TramFront, FileUp } from 'lucide-react';
+import clsx from 'clsx';
 
 interface SidebarProps {
-  currentView: 'bus' | 'tram'
-  onChangeView: (view: 'bus' | 'tram') => void
-  onExport: () => void
+  currentView: 'bus' | 'tram';
+  onChangeView: (view: 'bus' | 'tram') => void;
+  onExport: () => void;
 }
 
-export default function Sidebar({ currentView, onChangeView, onExport }: SidebarProps) {
+export default function Sidebar({
+  currentView,
+  onChangeView,
+  onExport,
+}: SidebarProps) {
   return (
     <div className="w-64 bg-gray-900 text-white flex flex-col h-full border-r border-gray-800">
       <div className="p-6">
@@ -24,7 +28,7 @@ export default function Sidebar({ currentView, onChangeView, onExport }: Sidebar
             'w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200',
             currentView === 'bus'
               ? 'bg-blue-600/20 text-blue-400 border border-blue-600/50 shadow-lg shadow-blue-900/20'
-              : 'hover:bg-gray-800 text-gray-400 hover:text-white'
+              : 'hover:bg-gray-800 text-gray-400 hover:text-white',
           )}
         >
           <Bus className="w-5 h-5" />
@@ -37,7 +41,7 @@ export default function Sidebar({ currentView, onChangeView, onExport }: Sidebar
             'w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200',
             currentView === 'tram'
               ? 'bg-purple-600/20 text-purple-400 border border-purple-600/50 shadow-lg shadow-purple-900/20'
-              : 'hover:bg-gray-800 text-gray-400 hover:text-white'
+              : 'hover:bg-gray-800 text-gray-400 hover:text-white',
           )}
         >
           <TramFront className="w-5 h-5" />
@@ -55,5 +59,5 @@ export default function Sidebar({ currentView, onChangeView, onExport }: Sidebar
         </button>
       </div>
     </div>
-  )
+  );
 }

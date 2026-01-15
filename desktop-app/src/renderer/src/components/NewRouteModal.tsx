@@ -1,32 +1,37 @@
-import React, { useState } from 'react'
-import { Route } from '../types'
-import { X, Save } from 'lucide-react'
+import React, { useState } from 'react';
+import { Route } from '../types';
+import { X, Save } from 'lucide-react';
 
 interface NewRouteModalProps {
-  currentType: 'bus' | 'tram'
-  isOpen: boolean
-  onClose: () => void
-  onSave: (route: Route) => void
+  currentType: 'bus' | 'tram';
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (route: Route) => void;
 }
 
-export default function NewRouteModal({ currentType, isOpen, onClose, onSave }: NewRouteModalProps) {
-  const [name, setName] = useState('')
-  const [cmd1, setCmd1] = useState('')
-  const [cmd2, setCmd2] = useState('')
-  const [text, setText] = useState('')
+export default function NewRouteModal({
+  currentType,
+  isOpen,
+  onClose,
+  onSave,
+}: NewRouteModalProps) {
+  const [name, setName] = useState('');
+  const [cmd1, setCmd1] = useState('');
+  const [cmd2, setCmd2] = useState('');
+  const [text, setText] = useState('');
 
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     // Simple ID generation, better usage would be UUID
-    const id = Date.now().toString()
+    const id = Date.now().toString();
 
     // Parse hex or int
     const parseCmd = (val: string) => {
-      if (val.startsWith('0x')) return parseInt(val, 16)
-      return parseInt(val)
-    }
+      if (val.startsWith('0x')) return parseInt(val, 16);
+      return parseInt(val);
+    };
 
     const newRoute: Route = {
       id,
@@ -34,31 +39,38 @@ export default function NewRouteModal({ currentType, isOpen, onClose, onSave }: 
       name,
       command1: parseCmd(cmd1) || 0,
       command2: parseCmd(cmd2) || 0,
-      text
-    }
+      text,
+    };
 
-    onSave(newRoute)
+    onSave(newRoute);
     // Reset
-    setName('')
-    setCmd1('')
-    setCmd2('')
-    setText('')
-    onClose()
-  }
+    setName('');
+    setCmd1('');
+    setCmd2('');
+    setText('');
+    onClose();
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
         <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-          <h2 className="text-lg font-semibold text-gray-800">Add New {currentType === 'bus' ? 'Bus' : 'Tram'} Route</h2>
-          <button onClick={onClose} className="p-1 rounded hover:bg-gray-200 text-gray-400 hover:text-gray-600 transition-colors">
+          <h2 className="text-lg font-semibold text-gray-800">
+            Add New {currentType === 'bus' ? 'Bus' : 'Tram'} Route
+          </h2>
+          <button
+            onClick={onClose}
+            className="p-1 rounded hover:bg-gray-200 text-gray-400 hover:text-gray-600 transition-colors"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Route Name</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Route Name
+            </label>
             <input
               required
               type="text"
@@ -71,7 +83,9 @@ export default function NewRouteModal({ currentType, isOpen, onClose, onSave }: 
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Command 1</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Command 1
+              </label>
               <input
                 required
                 type="text"
@@ -82,7 +96,9 @@ export default function NewRouteModal({ currentType, isOpen, onClose, onSave }: 
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Command 2</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Command 2
+              </label>
               <input
                 required
                 type="text"
@@ -95,7 +111,9 @@ export default function NewRouteModal({ currentType, isOpen, onClose, onSave }: 
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Display Text</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Display Text
+            </label>
             <textarea
               required
               rows={3}
@@ -118,5 +136,5 @@ export default function NewRouteModal({ currentType, isOpen, onClose, onSave }: 
         </form>
       </div>
     </div>
-  )
+  );
 }
