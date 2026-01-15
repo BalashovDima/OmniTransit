@@ -21,7 +21,7 @@ function App() {
 
   useEffect(() => {
     const loadData = async () => {
-      const data = await window.api.loadRoutes();
+      const data = await window.api.getRoutes();
       setRoutes(data); // This is safe because it happens after an await
     };
     loadData();

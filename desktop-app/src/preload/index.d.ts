@@ -6,7 +6,6 @@ declare global {
     electron: ElectronAPI
     api: {
       getRoutes: () => Promise<Route[]>
-      loadRoutes: () => Promise<Route[]>
       addRoute: (route: Route) => Promise<void>
       deleteRoute: (id: string) => Promise<void>
       exportData: () => Promise<{ success: boolean; message?: string; path?: string }>
