@@ -1,0 +1,18 @@
+{
+  "folders": [
+	{
+		"path": "../.."
+	},
+	{
+		"path": ".."
+	}
+],
+  "settings": {
+    "eslint.workingDirectories": [
+      {
+        "directory": "desktop-app",
+        "changeProcessCWD": true
+      }
+    ]
+  }
+}
