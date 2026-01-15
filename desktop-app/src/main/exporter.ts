@@ -11,22 +11,21 @@ export function generateEsp32Files(routes: Route[], outputDir: string): void {
   if (!fs.existsSync(tramsDir)) fs.mkdirSync(tramsDir, { recursive: true });
 
   const indexData = {
-    buses: [] as string[],
-    trams: [] as string[],
+    buses: [] as { name: string; file: string }[],
+    trams: [] as { name: string; file: string }[],
   };
 
   routes.forEach((route) => {
     const targetDir = route.type === 'bus' ? busesDir : tramsDir;
-    // Filename based on Route Name, sanitized.
-    const safeName = route.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    // Use ID for filename to avoid collisions and character issues
+    const fileName = `${route.id}.json`;
+    const filePath = path.join(targetDir, fileName);
 
     if (route.type === 'bus') {
-      indexData.buses.push(route.name);
+      indexData.buses.push({ name: route.name, file: route.id });
     } else if (route.type === 'tram') {
-      indexData.trams.push(route.name);
+      indexData.trams.push({ name: route.name, file: route.id });
     }
-
-    const filePath = path.join(targetDir, `${safeName}.json`);
 
     const data = {
       id: route.id,
