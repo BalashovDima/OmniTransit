@@ -1,18 +1,22 @@
 {
   "folders": [
-	{
-		"path": "../.."
-	},
-	{
-		"path": ".."
-	}
-],
+    {
+      "path": "../..",
+    },
+    {
+      "path": "..",
+    },
+    {
+      "path": "../../alfa-bus-protocol",
+    },
+  ],
   "settings": {
     "eslint.workingDirectories": [
       {
         "directory": "desktop-app",
-        "changeProcessCWD": true
-      }
-    ]
-  }
+        "changeProcessCWD": true,
+      },
+    ],
+    "stm32cube-ide-clangd.path": "cube",
+  },
 }
