@@ -21,6 +21,7 @@ export default function NewRouteModal({
   const [cmd1, setCmd1] = useState('');
   const [cmd2, setCmd2] = useState('');
   const [text, setText] = useState('');
+  const [binFile, setBinFile] = useState('');
 
   // Populate state when modal opens or routeToEdit changes
   React.useEffect(() => {
@@ -29,22 +30,15 @@ export default function NewRouteModal({
         setName(routeToEdit.name);
         setCmd1(routeToEdit.ibisLineCmd.toString());
         setCmd2(routeToEdit.ibisDestinationCmd.toString());
-        try {
-          const bytes = (routeToEdit.alfaSignBytes as any).data
-            ? new Uint8Array((routeToEdit.alfaSignBytes as any).data)
-            : routeToEdit.alfaSignBytes instanceof Uint8Array
-              ? routeToEdit.alfaSignBytes
-              : new Uint8Array(routeToEdit.alfaSignBytes as any);
-          setText(new TextDecoder().decode(bytes));
-        } catch {
-          setText('');
-        }
+        setText(routeToEdit.alfaSignText);
+        setBinFile(routeToEdit.alfaSignBinFile);
       } else {
         // Reset for new route
         setName('');
         setCmd1('');
         setCmd2('');
         setText('');
+        setBinFile('');
       }
     }
   }, [isOpen, routeToEdit]);
@@ -65,7 +59,8 @@ export default function NewRouteModal({
       name,
       ibisLineCmd: parseCmd(cmd1) || 0,
       ibisDestinationCmd: parseCmd(cmd2) || 0,
-      alfaSignBytes: new TextEncoder().encode(text),
+      alfaSignText: text,
+      alfaSignBinFile: binFile || `${id}.bin`,
     };
 
     onSave(newRoute);
@@ -145,6 +140,22 @@ export default function NewRouteModal({
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none"
               placeholder="Destination text..."
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Bin File Name
+            </label>
+            <input
+              type="text"
+              value={binFile}
+              onChange={(e) => setBinFile(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all font-mono"
+              placeholder="route-id.bin"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              Leave empty to auto-generate from ID.
+            </p>
           </div>
 
           <div className="pt-2">

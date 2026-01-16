@@ -4,6 +4,7 @@ export interface Route {
   name: string;
   ibisLineCmd: number;
   ibisDestinationCmd: number;
-  // Uint8Array is compatible with Buffer/BLOB in IPC and SQLite
-  alfaSignBytes: Uint8Array;
+  // No longer using bytes, now plain text and reference to bin file name
+  alfaSignText: string;
+  alfaSignBinFile: string;
 }

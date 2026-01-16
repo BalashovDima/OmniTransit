@@ -13,7 +13,8 @@ export interface Route {
   name: string;
   ibisLineCmd: number;
   ibisDestinationCmd: number;
-  alfaSignBytes: Buffer | Uint8Array;
+  alfaSignText: string;
+  alfaSignBinFile: string;
 }
 
 const START_VERSION = 1;
@@ -60,6 +61,33 @@ const migrations: Record<number, () => void> = {
 
     db.prepare('ALTER TABLE routes_new RENAME TO routes').run();
   },
+  3: () => {
+    db.prepare(
+      `
+        CREATE TABLE routes_v3 (
+          id TEXT PRIMARY KEY,
+          type TEXT NOT NULL CHECK(type IN ('bus', 'tram')),
+          name TEXT NOT NULL,
+          ibisLineCmd INTEGER NOT NULL,
+          ibisDestinationCmd INTEGER NOT NULL,
+          alfaSignText TEXT NOT NULL,
+          alfaSignBinFile TEXT NOT NULL
+        )
+      `,
+    ).run();
+
+    db.prepare(
+      `
+        INSERT INTO routes_v3 (id, type, name, ibisLineCmd, ibisDestinationCmd, alfaSignText, alfaSignBinFile)
+        SELECT id, type, name, ibisLineCmd, ibisDestinationCmd, CAST(alfaSignBytes AS TEXT), id || '.bin'
+        FROM routes
+      `,
+    ).run();
+
+    db.prepare('DROP TABLE routes').run();
+
+    db.prepare('ALTER TABLE routes_v3 RENAME TO routes').run();
+  },
 };
 
 export function initDB(): void {
@@ -102,7 +130,7 @@ export function updateRoute(route: Route): void {
   const stmt = db.prepare(`
     UPDATE routes 
     SET type = @type, name = @name, ibisLineCmd = @ibisLineCmd, 
-        ibisDestinationCmd = @ibisDestinationCmd, alfaSignBytes = @alfaSignBytes
+        ibisDestinationCmd = @ibisDestinationCmd, alfaSignText = @alfaSignText, alfaSignBinFile = @alfaSignBinFile
     WHERE id = @id
   `);
   stmt.run(route);
@@ -110,8 +138,8 @@ export function updateRoute(route: Route): void {
 
 export function addRoute(route: Route): void {
   const stmt = db.prepare(`
-    INSERT INTO routes (id, type, name, ibisLineCmd, ibisDestinationCmd, alfaSignBytes)
-    VALUES (@id, @type, @name, @ibisLineCmd, @ibisDestinationCmd, @alfaSignBytes)
+    INSERT INTO routes (id, type, name, ibisLineCmd, ibisDestinationCmd, alfaSignText, alfaSignBinFile)
+    VALUES (@id, @type, @name, @ibisLineCmd, @ibisDestinationCmd, @alfaSignText, @alfaSignBinFile)
   `);
   stmt.run(route);
 }

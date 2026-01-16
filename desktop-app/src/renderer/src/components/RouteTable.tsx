@@ -80,18 +80,7 @@ export default function RouteTable({
                       className="px-6 py-4 text-gray-700 max-w-xs truncate"
                       title="Sign Text"
                     >
-                      {(() => {
-                        try {
-                          const bytes = (route.alfaSignBytes as any).data
-                            ? new Uint8Array((route.alfaSignBytes as any).data)
-                            : route.alfaSignBytes instanceof Uint8Array
-                              ? route.alfaSignBytes
-                              : new Uint8Array(route.alfaSignBytes as any);
-                          return new TextDecoder().decode(bytes);
-                        } catch (e) {
-                          return '[Binary Data]';
-                        }
-                      })()}
+                      {route.alfaSignText}
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
