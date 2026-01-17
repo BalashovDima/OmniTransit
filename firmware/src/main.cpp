@@ -10,6 +10,10 @@
 #include <lvgl.h>
 #include "ui_app.h"
 #include "file_manager.h"
+#include "config.h"
+#include "ibis_protocol.h"
+
+IbisProtocol ibis(Serial2);
 
 /**
  * To use the built-in examples and demos of LVGL uncomment the includes below
@@ -25,6 +29,18 @@ using namespace esp_panel::board;
 
 void setup() {
   Serial.begin(115200);
+
+  // Initialize Protocols
+
+  Serial2.begin(1200, SERIAL_7E2, PIN_IBIS_RX, PIN_IBIS_TX);
+  ibis.begin();  // This calls Serial2.begin(1200, SERIAL_7E2) inside.
+  // We need to ensure specific pins are used unless default.
+  // Re-calling begin with pins:
+  Serial2.begin(1200, SERIAL_7E2, PIN_IBIS_RX, PIN_IBIS_TX);
+
+  // Initialize Alfa Serial 3
+  Serial.println("Initializing Alfa Serial");
+  Serial1.begin(ALFA_BAUD_RATE, ALFA_SERIAL_CONFIG, PIN_ALFA_RX, PIN_ALFA_TX);
 
   Serial.println("Initializing board");
   Board *board = new Board();
@@ -73,7 +89,7 @@ void setup() {
   /* Lock the mutex due to the LVGL APIs are not thread-safe */
   lvgl_port_lock(-1);
 
-  uiApp.init(&fileManager, &indexData);
+  uiApp.init(&fileManager, &indexData, &ibis);
 
   /* Release the mutex */
   lvgl_port_unlock();

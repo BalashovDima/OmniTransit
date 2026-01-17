@@ -74,11 +74,8 @@ bool FileManager::readRoute(const String &filename,
   details.name = doc["name"].as<String>();
   details.ibisLineCmd = doc["ibisLineCmd"].as<String>();
   details.ibisDestinationCmd = doc["ibisDestinationCmd"].as<String>();
-
-  JsonArray bytes = doc["alfaSignBytes"];
-  for (int b : bytes) {
-    details.alfaSignBytes.push_back((uint8_t)b);
-  }
+  details.alfaSignText = doc["alfaSignText"].as<String>();
+  details.alfaSignBinFile = doc["alfaSignBinFile"].as<String>();
 
   return true;
 }

@@ -3,9 +3,12 @@
 #define FONT_SMALL &Montserrat
 #define FONT_LARGE &Montserrat
 
-void UIApp::init(FileManager *fileManager, IndexData *indexData) {
+void UIApp::init(FileManager *fileManager,
+                 IndexData *indexData,
+                 IbisProtocol *ibis) {
   _fileManager = fileManager;
   _indexData = indexData;
+  _ibis = ibis;
 
   lv_obj_t *tabview = lv_tabview_create(lv_scr_act(), LV_DIR_TOP, 50);
 
@@ -166,31 +169,60 @@ void UIApp::onApply(bool isTram, lv_obj_t *dropdown) {
   }
 
   RouteDetails details;
+  // Type: 0 for bus, 1 for tram
   if (_fileManager->readRoute(selectedFile, details, isTram ? 1 : 0)) {
-    // Parse success
-    Serial.println("Parsing successful. Route Data:");
+    Serial.println("Parsing successful. Applying...");
+    uint16_t selectedOpt = lv_dropdown_get_selected(dropdown);
+    bool isIbis = (selectedOpt == 0);
 
-    // Create JSON to print
-    JsonDocument doc;
-    doc["id"] = details.id;
-    doc["name"] = details.name;
-    doc["ibisLineCmd"] = details.ibisLineCmd;
-    doc["ibisDestinationCmd"] = details.ibisDestinationCmd;
+    if (isIbis) {
+      Serial.println("Sending IBIS commands...");
+      if (_ibis) {
+        // Parse line and dest as int, defaults to 0 if invalid
+        uint16_t line = details.ibisLineCmd.toInt();
+        uint16_t dest = details.ibisDestinationCmd.toInt();
 
-    JsonArray arr = doc["alfaSignBytes"].to<JsonArray>();
-    for (uint8_t b : details.alfaSignBytes) {
-      arr.add(b);
+        // Send Line
+        _ibis->setLine(line);
+        delay(200);  // Small delay between commands often helps
+        // Send Destination
+        _ibis->setDestination(dest);
+        delay(200);
+        // Often sending text is useful too?
+        // _ibis->setText(details.alfaSignText);
+        Serial.printf("IBIS sent: Line %d, Dest %d\n", line, dest);
+      }
+    } else {
+      Serial.println("Sending Alfa Binary...");
+      // Read binary file content
+      String binPath =
+          (isTram ? "/trams/" : "/buses/") + details.alfaSignBinFile;
+
+      if (LittleFS.exists(binPath)) {
+        File binFile = LittleFS.open(binPath, "r");
+        if (binFile) {
+          Stream &alfaSerial = Serial1;
+
+          size_t sent = 0;
+          uint8_t buf[64];
+          while (binFile.available()) {
+            size_t len = binFile.read(buf, sizeof(buf));
+            alfaSerial.write(buf, len);
+            sent += len;
+          }
+          binFile.close();
+          Serial.printf("Alfa sent: %d bytes from %s\n", sent, binPath.c_str());
+        } else {
+          Serial.printf("Failed to open bin file: %s\n", binPath.c_str());
+        }
+      } else {
+        Serial.printf("Bin file not found: %s\n", binPath.c_str());
+      }
     }
 
-    uint16_t selectedOpt = lv_dropdown_get_selected(dropdown);
-    doc["selectedSignType"] = (selectedOpt == 0) ? "IBIS" : "Alfa";
-
-    serializeJsonPretty(doc, Serial);
-    Serial.println();
-
     // Update Home Label
-    lv_label_set_text_fmt(_label_home_selected, "Вибрано:\n%s",
-                          selectedName.c_str());
+    lv_label_set_text_fmt(_label_home_selected, "Вибрано:\n%s\n(%s)",
+                          selectedName.c_str(), isIbis ? "IBIS" : "Alfa");
   } else {
     Serial.println("Failed to read route file");
   }

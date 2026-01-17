@@ -19,7 +19,8 @@ struct RouteDetails {
   String name;
   String ibisLineCmd;
   String ibisDestinationCmd;
-  std::vector<uint8_t> alfaSignBytes;
+  String alfaSignText;
+  String alfaSignBinFile;
 };
 
 class FileManager {

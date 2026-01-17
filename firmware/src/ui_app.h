@@ -2,17 +2,19 @@
 #include <Arduino.h>
 #include <lvgl.h>
 #include "file_manager.h"
+#include "ibis_protocol.h"
 
 // Declare the custom font
 LV_FONT_DECLARE(Montserrat);
 
 class UIApp {
 public:
-  void init(FileManager *fileManager, IndexData *indexData);
+  void init(FileManager *fileManager, IndexData *indexData, IbisProtocol* ibis);
 
 private:
   FileManager *_fileManager;
   IndexData *_indexData;
+  IbisProtocol *_ibis;
 
   lv_obj_t *_label_home_selected;
 
